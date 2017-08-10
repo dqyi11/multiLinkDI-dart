@@ -21,5 +21,7 @@ int main(int argc, char* argv[])
   cube2Size << 0.5, 0.5, 0.5;
   di.addCube(cube2Pos, cube2Size);
 
+  di.render();
+
   return 0;
 }

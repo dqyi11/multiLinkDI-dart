@@ -14,6 +14,8 @@ public:
 
     void addCube(const Eigen::Vector3d& _poisition,
                  const Eigen::Vector3d& _size);
+
+    void render();
 protected:
     void setGeometry(const dart::dynamics::BodyNodePtr& bn);
 
@@ -54,7 +56,6 @@ protected:
     dart::dynamics::SkeletonPtr plane_;
 
     MyWindow window_;
-
 };
 
 #endif // MULTI_LINK_DI_

@@ -35,12 +35,6 @@ MultiLinkDI::MultiLinkDI(const unsigned int num_of_links)
     world_->addSkeleton(plane_);
 
     window_.setWorld(world_);
-    int argc = 0;
-    char* argv[] = {};
-    glutInit(&argc, argv);
-    window_.initWindow(640, 480, "multiLinkDI");
-    glutMainLoop();
-
 }
 
 MultiLinkDI::~MultiLinkDI()
@@ -58,6 +52,16 @@ void MultiLinkDI::addCube(const Eigen::Vector3d& _position,
 {
     dart::dynamics::SkeletonPtr cube = createCube(_position, _size, default_cube_mass);
     world_->addSkeleton(cube);
+}
+
+void MultiLinkDI::render()
+{
+    int argc = 0;
+    char* argv[] = {};
+    glutInit(&argc, argv);
+    window_.initWindow(640, 480, "multiLinkDI");
+    glutMainLoop();
+
 }
 
 void MultiLinkDI::setGeometry(const BodyNodePtr& bn)
