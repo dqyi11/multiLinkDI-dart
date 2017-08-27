@@ -15,6 +15,7 @@ public:
     void addCube(const Eigen::Vector3d& _poisition,
                  const Eigen::Vector3d& _size);
 
+
     void render();
 protected:
     void setGeometry(const dart::dynamics::BodyNodePtr& bn);
@@ -32,9 +33,11 @@ protected:
 
     unsigned int num_of_links_;
 
-    const double default_height = 1.0; // m
-    const double default_width = 0.2;  // m
-    const double default_depth = 0.2;  // m
+    const double default_distance_to_ground = 0.02;
+
+    const double default_height = 0.1; // m
+    const double default_width = 1.0;  // m
+    const double default_depth = 0.1;  // m
 
     const double default_torque = 15.0; // N-m
     const double default_force =  15.0; // N

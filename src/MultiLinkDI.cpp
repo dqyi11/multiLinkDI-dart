@@ -19,6 +19,7 @@ MultiLinkDI::MultiLinkDI(const unsigned int num_of_links)
 
     // Add each body to the last BodyNode in the di
     BodyNode* bn = makeRootBody(di_, "body1");
+
     for(unsigned int i=1; i<num_of_links_; i++)
     {
         std::stringstream ss;
@@ -61,7 +62,6 @@ void MultiLinkDI::render()
     glutInit(&argc, argv);
     window_.initWindow(640, 480, "multiLinkDI");
     glutMainLoop();
-
 }
 
 void MultiLinkDI::setGeometry(const BodyNodePtr& bn)
@@ -73,11 +73,11 @@ void MultiLinkDI::setGeometry(const BodyNodePtr& bn)
   // Create a shape node for visualization and collision checking
   auto shapeNode
       = bn->createShapeNodeWith<VisualAspect, CollisionAspect, DynamicsAspect>(box);
-  shapeNode->getVisualAspect()->setColor(dart::Color::Blue());
+  shapeNode->getVisualAspect()->setColor(dart::Color::Red());
 
   // Set the location of the shape node
   Eigen::Isometry3d box_tf(Eigen::Isometry3d::Identity());
-  Eigen::Vector3d center = Eigen::Vector3d(0, 0, default_height / 2.0);
+  Eigen::Vector3d center = Eigen::Vector3d(default_width / 2.0, 0, 0);
   box_tf.translation() = center;
   shapeNode->setRelativeTransform(box_tf);
 
@@ -120,9 +120,9 @@ BodyNode* MultiLinkDI::makeRootBody(const SkeletonPtr& di, const std::string& na
     // Set up the properties for the Joint
     RevoluteJoint::Properties properties;
     properties.mName = name + "_joint";
-    properties.mAxis = Eigen::Vector3d::UnitY();
+    properties.mAxis = Eigen::Vector3d::UnitZ();
     properties.mT_ParentBodyToJoint.translation() =
-        Eigen::Vector3d(0, 0, default_height);
+        Eigen::Vector3d(0, 0, default_depth/2);
     properties.mDampingCoefficients[0] = default_damping;
     properties.mRestPositions[0] = default_rest_position;
     properties.mSpringStiffnesses[0] = default_stiffness;
@@ -132,14 +132,14 @@ BodyNode* MultiLinkDI::makeRootBody(const SkeletonPtr& di, const std::string& na
           nullptr, properties, BodyNode::AspectProperties(name)).second;
 
     // Make a shape for the Joint
-    const double R = default_width / 2.0;
+    const double R = default_height / 2.0;
     const double h = default_depth;
     std::shared_ptr<CylinderShape> cyl(new CylinderShape(R, h));
 
     // Line up the cylinder with the Joint axis
     Eigen::Isometry3d tf(Eigen::Isometry3d::Identity());
     tf.linear() = dart::math::eulerXYZToMatrix(Eigen::Vector3d(0.0 * M_PI / 180.0,
-                                                               90.0 * M_PI / 180.0,
+                                                               0.0 * M_PI / 180.0,
                                                                0.0 * M_PI / 180.0));
 
     auto shapeNode = bn->createShapeNodeWith<VisualAspect>(cyl);
@@ -158,9 +158,9 @@ BodyNode* MultiLinkDI::addBody(const SkeletonPtr& di, BodyNode* parent,
   // Set up the properties for the Joint
   RevoluteJoint::Properties properties;
   properties.mName = name + "_joint";
-  properties.mAxis = Eigen::Vector3d::UnitY();
+  properties.mAxis = Eigen::Vector3d::UnitZ();
   properties.mT_ParentBodyToJoint.translation() =
-      Eigen::Vector3d(0, 0, default_height);
+      Eigen::Vector3d(default_width, 0, 0);
   properties.mRestPositions[0] = default_rest_position;
   properties.mSpringStiffnesses[0] = default_stiffness;
   properties.mDampingCoefficients[0] = default_damping;
@@ -170,14 +170,14 @@ BodyNode* MultiLinkDI::addBody(const SkeletonPtr& di, BodyNode* parent,
         parent, properties, BodyNode::AspectProperties(name)).second;
 
   // Make a shape for the Joint
-  const double R = default_width / 2.0;
+  const double R = default_height / 2.0;
   const double h = default_depth;
   std::shared_ptr<CylinderShape> cyl(new CylinderShape(R, h));
 
   // Line up the cylinder with the Joint axis
   Eigen::Isometry3d tf(Eigen::Isometry3d::Identity());
   tf.linear() = dart::math::eulerXYZToMatrix(Eigen::Vector3d(0.0 * M_PI / 180.0,
-                                                             90.0 * M_PI / 180.0,
+                                                             0.0 * M_PI / 180.0,
                                                              0.0 * M_PI / 180.0));
 
   auto shapeNode = bn->createShapeNodeWith<VisualAspect>(cyl);

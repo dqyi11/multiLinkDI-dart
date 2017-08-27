@@ -3,11 +3,11 @@
 
 int main(int argc, char* argv[])
 {
-  MultiLinkDI di(3);
+  MultiLinkDI di(2);
 
   // Set the initial position of the first DegreeOfFreedom so that the di
   // starts to swing right away
-  di.setDofPosition(0, 30 * M_PI / 180.0);
+  di.setDofPosition(0, 0 * M_PI / 180.0);
 
   Eigen::Vector3d cube1Pos;
   Eigen::Vector3d cube1Size;
