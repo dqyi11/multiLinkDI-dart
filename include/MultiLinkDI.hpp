@@ -10,13 +10,17 @@ public:
     MultiLinkDI(const unsigned int num_of_links);
     virtual ~MultiLinkDI();
 
+    Eigen::VectorXd getPosition();
+    void setPosition(const Eigen::VectorXd& pos);
     void setDofPosition(unsigned int idx, double pos);
 
     void addCube(const Eigen::Vector3d& _poisition,
                  const Eigen::Vector3d& _size);
 
+    bool isCollided(const Eigen::VectorXd& pos);
 
-    void render();
+    void initVisualization();
+    void updateVisualization();
 protected:
     void setGeometry(const dart::dynamics::BodyNodePtr& bn);
 
@@ -33,7 +37,7 @@ protected:
 
     unsigned int num_of_links_;
 
-    const double default_distance_to_ground = 0.02;
+    const double default_distance_to_ground = 0.05;
 
     const double default_height = 0.1; // m
     const double default_width = 1.0;  // m
@@ -57,6 +61,8 @@ protected:
     dart::simulation::WorldPtr world_;
     dart::dynamics::SkeletonPtr di_;
     dart::dynamics::SkeletonPtr plane_;
+
+    std::vector<dart::dynamics::SkeletonPtr> objects_;
 
     MyWindow window_;
 };

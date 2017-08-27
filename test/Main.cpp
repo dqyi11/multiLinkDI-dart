@@ -3,11 +3,7 @@
 
 int main(int argc, char* argv[])
 {
-  MultiLinkDI di(2);
-
-  // Set the initial position of the first DegreeOfFreedom so that the di
-  // starts to swing right away
-  di.setDofPosition(0, 0 * M_PI / 180.0);
+  MultiLinkDI di(3);
 
   Eigen::Vector3d cube1Pos;
   Eigen::Vector3d cube1Size;
@@ -21,7 +17,19 @@ int main(int argc, char* argv[])
   cube2Size << 0.5, 0.5, 0.5;
   di.addCube(cube2Pos, cube2Size);
 
-  di.render();
+  /*
+  di.setDofPosition(0, 90 * M_PI / 180.0);
+  di.setDofPosition(1, 90 * M_PI / 180.0);
+  di.setDofPosition(2, 90 * M_PI / 180.0);
+  */
+
+  Eigen::VectorXd pos(3);
+  pos << 45 * M_PI / 180.0, 0 * M_PI / 180.0, 0 * M_PI / 180.0;
+  //di.setPosition(pos);
+
+  std::cout << "COLLISION " << di.isCollided(pos) << std::endl;
+
+  di.initVisualization();
 
   return 0;
 }
