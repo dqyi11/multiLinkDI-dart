@@ -1,11 +1,13 @@
 #include <sstream>
 #include <string>
 #include "MultiLinkDI.hpp"
+#include "MultiLinkDIWindow.hpp"
 
 using namespace dart::simulation;
 using namespace dart::dynamics;
 
-MultiLinkDI::MultiLinkDI(const unsigned int num_of_links)
+MultiLinkDI::MultiLinkDI(const unsigned int num_of_links, Eigen::Vector3d& pos)
+    : basePos_(pos)
 {
   num_of_links_ = num_of_links;
 
@@ -19,12 +21,14 @@ MultiLinkDI::MultiLinkDI(const unsigned int num_of_links)
 
   // Add each body to the last BodyNode in the di
   BodyNode* bn = makeRootBody(di_, "body1");
+  bodyNodes_.push_back(bn);
 
   for(unsigned int i=1; i<num_of_links_; i++)
   {
     std::stringstream ss;
     ss << "body" << i+1;
     bn = addBody(di_, bn, ss.str());
+    bodyNodes_.push_back(bn);
   }
 
   Eigen::Vector3d planePos;
@@ -36,6 +40,7 @@ MultiLinkDI::MultiLinkDI(const unsigned int num_of_links)
   world_->addSkeleton(plane_);
 
   window_.setWorld(world_);
+  window_.setMultiLinkDI(this);
 }
 
 MultiLinkDI::~MultiLinkDI()
@@ -43,20 +48,20 @@ MultiLinkDI::~MultiLinkDI()
 
 }
 
-void MultiLinkDI::setDofPosition(unsigned int idx, double pos)
+void MultiLinkDI::setDofConfiguration(unsigned int idx, double config)
 {
-  di_->getDof(idx)->setPosition(pos);
+  di_->getDof(idx)->setPosition(config);
 }
 
-void MultiLinkDI::setPosition(const Eigen::VectorXd& pos)
+void MultiLinkDI::setConfiguration(const Eigen::VectorXd& config)
 {
   for(unsigned int idx=0;idx<num_of_links_;idx++)
   {
-    di_->getDof(idx)->setPosition(pos[idx]);
+    di_->getDof(idx)->setPosition(config[idx]);
   }
 }
 
-Eigen::VectorXd MultiLinkDI::getPosition()
+Eigen::VectorXd MultiLinkDI::getConfiguration()
 {
    Eigen::VectorXd pos(num_of_links_);
    for(unsigned int idx=0;idx<num_of_links_;idx++)
@@ -88,10 +93,10 @@ void MultiLinkDI::updateVisualization()
   window_.draw();
 }
 
-bool MultiLinkDI::isCollided(const Eigen::VectorXd& pos)
+bool MultiLinkDI::isCollided(const Eigen::VectorXd& config)
 {
-  Eigen::VectorXd originalPos = getPosition();
-  setPosition(pos);
+  Eigen::VectorXd originalConfig = getConfiguration();
+  setConfiguration(config);
   auto collisionEngine = world_->getConstraintSolver()->getCollisionDetector();
   auto collisionGroup = collisionEngine->createCollisionGroup(di_.get());
   auto collisionGroup2 = collisionEngine->createCollisionGroup();
@@ -106,8 +111,26 @@ bool MultiLinkDI::isCollided(const Eigen::VectorXd& pos)
   dart::collision::CollisionResult result;
   bool collision = collisionGroup->collide(collisionGroup2.get(), option, &result);
 
-  setPosition(originalPos);
+  setConfiguration(originalConfig);
   return collision;
+}
+
+Eigen::Vector3d MultiLinkDI::getEndEffectorPos(const Eigen::VectorXd& config)
+{
+    Eigen::VectorXd originalConfig = getConfiguration();
+    setConfiguration(config);
+
+    Eigen::Vector3d pos = getEndEffectorPos();
+
+    setConfiguration(originalConfig);
+    return pos;
+}
+
+Eigen::Vector3d MultiLinkDI::getEndEffectorPos()
+{
+    dart::dynamics::BodyNode* node = bodyNodes_[num_of_links_-1];
+    Eigen::Vector3d pos = node->getWorldTransform() * basePos_;
+    return pos;
 }
 
 void MultiLinkDI::setGeometry(const BodyNodePtr& bn)
@@ -167,7 +190,7 @@ BodyNode* MultiLinkDI::makeRootBody(const SkeletonPtr& di, const std::string& na
     properties.mName = name + "_joint";
     properties.mAxis = Eigen::Vector3d::UnitZ();
     properties.mT_ParentBodyToJoint.translation() =
-        Eigen::Vector3d(0, 0, default_depth/2);
+        Eigen::Vector3d(0, 0, default_depth/2) + basePos_;
     properties.mDampingCoefficients[0] = default_damping;
     properties.mRestPositions[0] = default_rest_position;
     properties.mSpringStiffnesses[0] = default_stiffness;

@@ -2,17 +2,17 @@
 #define MULTI_LINK_DI_
 
 #include <dart/dart.hpp>
-#include "MyWindow.hpp"
+#include "MultiLinkDIWindow.hpp"
 
 class MultiLinkDI
 {
 public:
-    MultiLinkDI(const unsigned int num_of_links);
+    MultiLinkDI(const unsigned int num_of_links, Eigen::Vector3d& pos);
     virtual ~MultiLinkDI();
 
-    Eigen::VectorXd getPosition();
-    void setPosition(const Eigen::VectorXd& pos);
-    void setDofPosition(unsigned int idx, double pos);
+    Eigen::VectorXd getConfiguration();
+    void setConfiguration(const Eigen::VectorXd& config);
+    void setDofConfiguration(unsigned int idx, double config);
 
     void addCube(const Eigen::Vector3d& _poisition,
                  const Eigen::Vector3d& _size);
@@ -21,6 +21,9 @@ public:
 
     void initVisualization();
     void updateVisualization();
+
+    Eigen::Vector3d getEndEffectorPos(const Eigen::VectorXd& config);
+    Eigen::Vector3d getEndEffectorPos();
 protected:
     void setGeometry(const dart::dynamics::BodyNodePtr& bn);
 
@@ -61,10 +64,14 @@ protected:
     dart::simulation::WorldPtr world_;
     dart::dynamics::SkeletonPtr di_;
     dart::dynamics::SkeletonPtr plane_;
+    std::vector<dart::dynamics::BodyNode*> bodyNodes_;
+
+    Eigen::Vector3d basePos_;
 
     std::vector<dart::dynamics::SkeletonPtr> objects_;
 
-    MyWindow window_;
+
+    MultiLinkDIWindow window_;
 };
 
 #endif // MULTI_LINK_DI_

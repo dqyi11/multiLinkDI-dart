@@ -1,9 +1,10 @@
 #include "MultiLinkDI.hpp"
-#include "MyWindow.hpp"
 
 int main(int argc, char* argv[])
 {
-  MultiLinkDI di(3);
+  Eigen::Vector3d diPos;
+  //diPos << -2.0, -2.0, 0.0;
+  MultiLinkDI di(3, diPos);
 
   Eigen::Vector3d cube1Pos;
   Eigen::Vector3d cube1Size;
@@ -28,6 +29,13 @@ int main(int argc, char* argv[])
   //di.setPosition(pos);
 
   std::cout << "COLLISION " << di.isCollided(pos) << std::endl;
+
+  Eigen::Vector3d endPos = di.getEndEffectorPos();
+  std::cout << "ENDEFFECTOR " << endPos << std::endl;
+
+  Eigen::VectorXd pos2(3);
+  pos2 << 15 * M_PI / 180.0, -15 * M_PI / 180.0, 15 * M_PI / 180.0;
+  di.setConfiguration(pos2);
 
   di.initVisualization();
 

@@ -14,7 +14,7 @@ FILE(GLOB_RECURSE LibFiles "include/*.h"
 add_custom_target(headers SOURCES ${LibFiles})
 
 add_library(${PROJECT_NAME} src/MultiLinkDI.cpp
-                            src/MyWindow.cpp)
+                            src/MultiLinkDIWindow.cpp)
 target_link_libraries(${PROJECT_NAME} ${DART_LIBRARIES})
 
 add_executable(${PROJECT_NAME}_test test/Main.cpp)
