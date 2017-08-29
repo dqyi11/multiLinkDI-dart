@@ -4,6 +4,8 @@
 void MultiLinkDIWindow::draw()
 {
     SimWindow::draw();
+
+
 }
 
 void MultiLinkDIWindow::setConfigPath(Eigen::MatrixXd& configPath)
