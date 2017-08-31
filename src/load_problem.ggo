@@ -1,0 +1,8 @@
+package "load_problem"
+version "0.0.1"
+purpose "load problem"
+
+option "problem" - "problem file" string optional
+option "path" - "path file" string optional
+
+text ""
