@@ -6,6 +6,18 @@ int main(int argc, char* argv[])
   //diPos << -2.0, -2.0, 0.0;
   MultiLinkDI di(3, diPos);
 
+  // Add each body to the last BodyNode in the di
+  dart::dynamics::BodyNode* bn = di.makeRootBody("body1");
+
+  for(unsigned int i=1; i<di.getNumOfLinks(); i++)
+  {
+    std::stringstream ss;
+    ss << "body" << i+1;
+    bn = di.addBody(bn, ss.str());
+  }
+
+  di.addPlane();
+
   Eigen::Vector3d cube1Pos;
   Eigen::Vector3d cube1Size;
   cube1Pos << 1.0, 1.0, 0.25;

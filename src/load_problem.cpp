@@ -1,7 +1,6 @@
-#include <fstream>
-#include "jsoncpp/json/json.h"
 #include "load_problem_cmdline.h"
 #include "MultiLinkDI.hpp"
+#include "MultiLinkDIUtil.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -22,85 +21,8 @@ int main(int argc, char* argv[])
     pathFilename = args.path_arg;
   }
 
-  Json::Reader reader;
-  Json::Value root;
-  std::ifstream problemFile(problemFilename, std::ifstream::binary);
-  bool parseSuccess = reader.parse(problemFile, root, false);
-  if(parseSuccess)
-  {
+  std::shared_ptr<MultiLinkDI> di = createMultiLinkDI(problemFilename);
+  loadMultiLinkDIPath( di, pathFilename );
 
-    int link_num = root["link_num"].asInt();
-    int dimension = link_num * 2;
-
-    Eigen::VectorXd startConfig(dimension);
-    Eigen::VectorXd goalConfig(dimension);
-    Json::Value startVal = root["start"];
-    Json::Value goalVal = root["goal"];
-    for(int i=0;i<startVal.size();i++)
-    {
-      startConfig[i] = startVal[i].asDouble();
-      goalConfig[i] = goalVal[i].asDouble();
-    }
-
-    Eigen::Vector3d diPos;
-    Json::Value diPosVal = root["di_pos"];
-    for(int i=0;i<diPosVal.size();i++)
-    {
-      diPos[i] = diPosVal[i].asDouble();
-    }
-
-    MultiLinkDI di(link_num, diPos);
-
-    Json::Value obstacles = root["obstacles"];
-    for(int i=0;i<obstacles.size();i++)
-    {
-      std::string type = obstacles[i].get("type","").asString();
-      if(type == "hypercube")
-      {
-        Json::Value centerVal, sizeVal;
-
-        Eigen::Vector3d obs_center;
-        Eigen::Vector3d obs_size;
-
-        centerVal = obstacles[i].get("center", 0);
-        for(int j=0;j<centerVal.size();j++)
-        {
-          obs_center[j] = centerVal[j].asDouble();
-        }
-        sizeVal = obstacles[i].get("size",0);
-        for(int j=0;j<sizeVal.size();j++)
-        {
-          obs_size[j] = sizeVal[j].asDouble();
-        }
-        di.addCube(obs_center, obs_size);
-      }
-    }
-
-    di.setConfiguration(startConfig);
-
-    std::ifstream pathFile(pathFilename, std::ios::in);
-
-    if(pathFile.is_open())
-    {
-        std::string stateStr;
-        while( std::getline(pathFile, stateStr) )
-        {
-          size_t dim = di.getNumOfLinks()*2;
-          Eigen::VectorXd waypointVec(dim);
-          std::stringstream iss(stateStr);
-          int dimIdx = 0;
-          double val = 0;
-          while( iss >> val && dimIdx < dim)
-          {
-            waypointVec[dimIdx] = val;
-            dimIdx ++;
-          }
-
-          di.addWaypoint( waypointVec );
-        }
-    }
-
-    di.initVisualization();
-  }
-
+  di->initVisualization();
 }
