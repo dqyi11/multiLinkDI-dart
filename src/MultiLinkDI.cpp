@@ -81,6 +81,7 @@ void MultiLinkDI::addCube(const Eigen::Vector3d& _position,
 
 void MultiLinkDI::initVisualization()
 {
+  initLineSegment();
   int argc = 0;
   char* argv[] = {};
   glutInit(&argc, argv);
@@ -128,8 +129,9 @@ Eigen::Vector3d MultiLinkDI::getEndEffectorPos(const Eigen::VectorXd& config)
 
 Eigen::Vector3d MultiLinkDI::getEndEffectorPos()
 {
-    dart::dynamics::BodyNode* node = bodyNodes_[num_of_links_-1];
-    Eigen::Vector3d pos = node->getWorldTransform() * basePos_;
+    dart::dynamics::BodyNode* node = bodyNodes_.back();
+    Eigen::Isometry3d trans = node->getWorldTransform() * node->getRelativeTransform();
+    Eigen::Vector3d pos = trans * basePos_;
     return pos;
 }
 
@@ -256,4 +258,29 @@ BodyNode* MultiLinkDI::addBody(const SkeletonPtr& di, BodyNode* parent,
   setGeometry(bn);
 
   return bn;
+}
+
+void MultiLinkDI::initLineSegment()
+{
+   for(size_t idx=0;idx<waypoints_.size()-1;idx++)
+   {
+       Eigen::Vector3d prev = waypoints_[idx].head(3);
+       Eigen::Vector3d next = waypoints_[idx+1].head(3);
+
+       Eigen::Vector3d prevPos = getEndEffectorPos(prev);
+       Eigen::Vector3d nextPos = getEndEffectorPos(next);
+
+       dart::dynamics::SimpleFramePtr lineFrame =
+               std::make_shared<dart::dynamics::SimpleFrame>(
+                 dart::dynamics::Frame::World());
+
+       dart::dynamics::LineSegmentShapePtr lineSeg =
+               std::make_shared<dart::dynamics::LineSegmentShape>(prevPos, nextPos, 3.0);
+       lineSeg->addDataVariance(dart::dynamics::Shape::DYNAMIC_VERTICES);
+
+       lineFrame->setShape(lineSeg);
+       lineFrame->createVisualAspect();
+       lineFrame->getVisualAspect()->setColor(DefaultForceLineColor);
+       world_->addSimpleFrame(lineFrame);
+   }
 }

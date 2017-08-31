@@ -24,6 +24,14 @@ public:
 
     Eigen::Vector3d getEndEffectorPos(const Eigen::VectorXd& config);
     Eigen::Vector3d getEndEffectorPos();
+
+    unsigned int getNumOfLinks() { return num_of_links_; }
+
+    void addWaypoint( Eigen::VectorXd waypoint ) { waypoints_.push_back(waypoint); }
+    void clearWaypoints() { waypoints_.clear(); }
+    size_t getWaypointNum() { return waypoints_.size(); }
+    Eigen::VectorXd getWaypoint(size_t idx) { return waypoints_[idx]; }
+
 protected:
     void setGeometry(const dart::dynamics::BodyNodePtr& bn);
 
@@ -37,6 +45,8 @@ protected:
     dart::dynamics::BodyNode* addBody(const dart::dynamics::SkeletonPtr& di,
                                       dart::dynamics::BodyNode* parent,
                                       const std::string& name);
+
+    void initLineSegment();
 
     unsigned int num_of_links_;
 
@@ -60,6 +70,7 @@ protected:
     const double delta_damping = 1.0;
 
     const double default_cube_mass = 1.0;
+    const Eigen::Vector4d DefaultForceLineColor = Eigen::Vector4d(1.0, 0.63, 0.0, 1.0);
 
     dart::simulation::WorldPtr world_;
     dart::dynamics::SkeletonPtr di_;
@@ -70,6 +81,8 @@ protected:
 
     std::vector<dart::dynamics::SkeletonPtr> objects_;
 
+    std::vector<Eigen::VectorXd> waypoints_;
+    std::vector<dart::dynamics::LineSegmentShapePtr> lineSegments_;
 
     MultiLinkDIWindow window_;
 };

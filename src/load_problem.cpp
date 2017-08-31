@@ -32,14 +32,14 @@ int main(int argc, char* argv[])
     int link_num = root["link_num"].asInt();
     int dimension = link_num * 2;
 
-    Eigen::VectorXd startVec(dimension);
-    Eigen::VectorXd goalVec(dimension);
+    Eigen::VectorXd startConfig(dimension);
+    Eigen::VectorXd goalConfig(dimension);
     Json::Value startVal = root["start"];
     Json::Value goalVal = root["goal"];
     for(int i=0;i<startVal.size();i++)
     {
-      startVec[i] = startVal[i].asDouble();
-      goalVec[i] = goalVal[i].asDouble();
+      startConfig[i] = startVal[i].asDouble();
+      goalConfig[i] = goalVal[i].asDouble();
     }
 
     Eigen::Vector3d diPos;
@@ -74,6 +74,30 @@ int main(int argc, char* argv[])
         }
         di.addCube(obs_center, obs_size);
       }
+    }
+
+    di.setConfiguration(startConfig);
+
+    std::ifstream pathFile(pathFilename, std::ios::in);
+
+    if(pathFile.is_open())
+    {
+        std::string stateStr;
+        while( std::getline(pathFile, stateStr) )
+        {
+          size_t dim = di.getNumOfLinks()*2;
+          Eigen::VectorXd waypointVec(dim);
+          std::stringstream iss(stateStr);
+          int dimIdx = 0;
+          double val = 0;
+          while( iss >> val && dimIdx < dim)
+          {
+            waypointVec[dimIdx] = val;
+            dimIdx ++;
+          }
+
+          di.addWaypoint( waypointVec );
+        }
     }
 
     di.initVisualization();
