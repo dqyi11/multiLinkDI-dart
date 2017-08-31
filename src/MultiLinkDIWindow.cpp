@@ -45,6 +45,27 @@ void MultiLinkDIWindow::keyboard(unsigned char key, int x, int y)
         di_->setConfiguration( configD );
         break;
     }
+    case 's':
+    {
+        std::cout << "PRESS S " << waypointIdx_ << std::endl;
+        if(waypointIdx_ < di_->getWaypointNum()-1)
+        {
+            Eigen::VectorXd currConfig = di_->getWaypoint(waypointIdx_);
+            Eigen::VectorXd nextConfig = di_->getWaypoint(waypointIdx_+1);
+            Eigen::VectorXd deltaConfig = nextConfig - currConfig;
+            for(double i=di_->getResolutionSize();
+                i <= 1.0+di_->getResolutionSize(); i+= di_->getResolutionSize())
+            {
+                usleep(default_step_time);
+                Eigen::VectorXd newConfig = currConfig + i * deltaConfig;
+                di_->setConfiguration( newConfig );
+                render();
+                std::cout << "time step " << i << std::endl;
+            }
+            usleep(default_end_delay_time);
+            di_->setConfiguration(currConfig);
+        }
+    }
     default:
         SimWindow::keyboard(key, x, y);
     }

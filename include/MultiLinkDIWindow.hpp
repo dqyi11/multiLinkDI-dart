@@ -45,6 +45,9 @@ protected:
     Eigen::MatrixXd path_;
     MultiLinkDI* di_;
     int waypointIdx_;
+
+    int default_step_time = 50000;
+    int default_end_delay_time = 500000;
 };
 
 #endif // MULTILINKDI_WINDOW_HPP_

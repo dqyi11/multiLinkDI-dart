@@ -264,23 +264,32 @@ void MultiLinkDI::initLineSegment()
 {
    for(size_t idx=0;idx<waypoints_.size()-1;idx++)
    {
-       Eigen::Vector3d prev = waypoints_[idx].head(3);
-       Eigen::Vector3d next = waypoints_[idx+1].head(3);
+       Eigen::Vector3d prevConfig = waypoints_[idx].head(3);
+       Eigen::Vector3d nextConfig = waypoints_[idx+1].head(3);
 
-       Eigen::Vector3d prevPos = getEndEffectorPos(prev);
-       Eigen::Vector3d nextPos = getEndEffectorPos(next);
+       Eigen::VectorXd deltaConfig = nextConfig - prevConfig;
+       for(double i=0.0;
+           i <= 1.0; i+= getResolutionSize())
+       {
+           Eigen::VectorXd newConfig = prevConfig + i * deltaConfig;
+           Eigen::VectorXd newConfigNext = newConfig + getResolutionSize() * deltaConfig;
 
-       dart::dynamics::SimpleFramePtr lineFrame =
-               std::make_shared<dart::dynamics::SimpleFrame>(
-                 dart::dynamics::Frame::World());
+           Eigen::Vector3d newPos = getEndEffectorPos(newConfig);
+           Eigen::Vector3d newPosNext = getEndEffectorPos(newConfigNext);
 
-       dart::dynamics::LineSegmentShapePtr lineSeg =
-               std::make_shared<dart::dynamics::LineSegmentShape>(prevPos, nextPos, 3.0);
-       lineSeg->addDataVariance(dart::dynamics::Shape::DYNAMIC_VERTICES);
+           dart::dynamics::SimpleFramePtr lineFrame =
+                   std::make_shared<dart::dynamics::SimpleFrame>(
+                     dart::dynamics::Frame::World());
 
-       lineFrame->setShape(lineSeg);
-       lineFrame->createVisualAspect();
-       lineFrame->getVisualAspect()->setColor(DefaultForceLineColor);
-       world_->addSimpleFrame(lineFrame);
+           dart::dynamics::LineSegmentShapePtr lineSeg =
+                   std::make_shared<dart::dynamics::LineSegmentShape>(newPos, newPosNext, 3.0);
+           lineSeg->addDataVariance(dart::dynamics::Shape::DYNAMIC_VERTICES);
+
+           lineFrame->setShape(lineSeg);
+           lineFrame->createVisualAspect();
+           lineFrame->getVisualAspect()->setColor(DefaultForceLineColor);
+           world_->addSimpleFrame(lineFrame);
+       }
+
    }
 }

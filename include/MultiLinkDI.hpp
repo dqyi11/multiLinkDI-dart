@@ -32,6 +32,9 @@ public:
     size_t getWaypointNum() { return waypoints_.size(); }
     Eigen::VectorXd getWaypoint(size_t idx) { return waypoints_[idx]; }
 
+
+    double getResolutionSize() { return default_resolution_size; }
+
 protected:
     void setGeometry(const dart::dynamics::BodyNodePtr& bn);
 
@@ -69,6 +72,7 @@ protected:
     const double default_damping = 5.0;
     const double delta_damping = 1.0;
 
+    const double default_resolution_size = 0.02;
     const double default_cube_mass = 1.0;
     const Eigen::Vector4d DefaultForceLineColor = Eigen::Vector4d(1.0, 0.63, 0.0, 1.0);
 
