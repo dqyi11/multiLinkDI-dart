@@ -58,9 +58,11 @@ void MultiLinkDIWindow::keyboard(unsigned char key, int x, int y)
             {
                 usleep(default_step_time);
                 Eigen::VectorXd newConfig = currConfig + i * deltaConfig;
+                bool collision = di_->isCollided(newConfig);
                 di_->setConfiguration( newConfig );
+
                 render();
-                std::cout << "time step " << i << std::endl;
+                std::cout << "time step " << i << " " << collision << std::endl;
             }
             usleep(default_end_delay_time);
             di_->setConfiguration(currConfig);
