@@ -42,6 +42,8 @@ public:
     void nextWaypoint();
 
 protected:
+    void simulateCurrentWaypoint();
+
     Eigen::MatrixXd path_;
     MultiLinkDI* di_;
     int waypointIdx_;

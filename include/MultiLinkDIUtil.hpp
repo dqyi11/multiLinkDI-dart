@@ -57,6 +57,23 @@ std::shared_ptr<MultiLinkDI> createMultiLinkDI( std::string problemFilename )
         }
     }
 
+    Json::Value plane = root["plane"];
+    for(int i=0;i<plane.size();i++)
+    {
+        Eigen::Vector3d plane_pos, plane_size;
+        Json::Value planePosVal = plane[i].get("plane_pos", 0);
+        Json::Value planeSizeVal = plane[i].get("plane_size", 0);
+        for(int j=0;j<planePosVal.size();j++)
+        {
+            plane_pos[j] = planePosVal[j].asDouble();
+        }
+        for(int j=0;j<planeSizeVal.size();j++)
+        {
+            plane_size[j] = planeSizeVal[j].asDouble();
+        }
+        di->addPlane(plane_pos, plane_size);
+    }
+
     Json::Value obstacles = root["obstacles"];
     for(int i=0;i<obstacles.size();i++)
     {

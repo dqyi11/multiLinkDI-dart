@@ -1,5 +1,12 @@
 {
 "link_num" : 3,
+"links" : [
+{"name" : "1", "width" : 1.0, "height" : 0.1, "depth" : 0.1},
+{"name" : "2", "width" : 1.0, "height" : 0.1, "depth" : 0.1},
+{"name" : "3", "width" : 1.0, "height" : 0.1, "depth" : 0.1}
+],
+"plane" : [
+{"plane_pos" : [0.0, 0.0, 0.0], "plane_size" : [8.0, 8.0, 0.02]}],
 "start" : [-1.0, -1.0, -1.0, 0.0, 0.0, 0.0],
 "goal" : [1.0, 1.0, 1.0, 8.0, 8.0, 8.0],
 "di_pos" : [0.0, 0.0, 0.0],
