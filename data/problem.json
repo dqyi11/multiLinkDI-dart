@@ -1,14 +1,15 @@
 {
-"link_num" : 3,
+"link_num" : 4,
 "links" : [
-{"name" : "1", "width" : 1.0, "height" : 0.1, "depth" : 0.1},
-{"name" : "2", "width" : 1.0, "height" : 0.1, "depth" : 0.1},
-{"name" : "3", "width" : 1.0, "height" : 0.1, "depth" : 0.1}
+{"name" : "1", "orientation" : "Z", "width" : 1.0, "height" : 0.1, "depth" : 0.1, "initConfig" : 0.0, "euler" : [0.0, 0.0, 0.0], "trans" : [0.0, 0.0, 0.0]},
+{"name" : "2", "orientation" : "Z", "width" : 1.0, "height" : 0.1, "depth" : 0.1, "initConfig" : 0.0, "euler" : [0.0, 0.0, 0.0], "trans" : [1.0, 0.0, 0.0]},
+{"name" : "3", "orientation" : "Z", "width" : 1.0, "height" : 0.1, "depth" : 0.1, "initConfig" : 0.0, "euler" : [0.0, 0.0, 0.0], "trans" : [1.0, 0.0, 0.0]},
+{"name" : "4", "orientation" : "Z", "width" : 1.0, "height" : 0.1, "depth" : 0.1, "initConfig" : 0.0, "euler" : [0.0, 0.0, 0.0], "trans" : [1.0, 0.0, 0.0]}
 ],
 "plane" : [
 {"plane_pos" : [0.0, 0.0, 0.0], "plane_size" : [8.0, 8.0, 0.02]}],
-"start" : [-1.0, -1.0, -1.0, 0.0, 0.0, 0.0],
-"goal" : [1.0, 1.0, 1.0, 8.0, 8.0, 8.0],
+"start" : [-4.0, -4.0, -4.0, -4.0, 0.0, 0.0, 0.0, 0.0],
+"goal" : [4.0, 4.0, 4.0, 4.0, 8.0, 8.0, 8.0, 8.0],
 "di_pos" : [0.0, 0.0, 0.0],
 "obstacles": [
 {"type": "hypercube", "center": [1.0, 1.0, 0.25], "size": [0.5, 0.5, 0.5]},

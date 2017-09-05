@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
   }
 
   std::string problemFilename = "problem.json";
-  std::string pathFilename = "path.txt";
+  std::string pathFilename = "";
 
   if(args.problem_given)
   {
@@ -22,7 +22,9 @@ int main(int argc, char* argv[])
   }
 
   std::shared_ptr<MultiLinkDI> di = createMultiLinkDI(problemFilename);
-  loadMultiLinkDIPath( di, pathFilename );
-
+  if(pathFilename=="")
+  {
+    loadMultiLinkDIPath( di, pathFilename );
+  }
   di->initVisualization();
 }
