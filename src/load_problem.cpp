@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
   }
 
   std::shared_ptr<MultiLinkDI> di = createMultiLinkDI(problemFilename);
-  if(pathFilename=="")
+  if(pathFilename!="")
   {
     loadMultiLinkDIPath( di, pathFilename );
   }
