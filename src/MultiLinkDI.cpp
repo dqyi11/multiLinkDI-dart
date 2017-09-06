@@ -342,6 +342,7 @@ void MultiLinkDI::initLineSegment()
        Eigen::VectorXd prevConfig = waypoints_[idx].head(num_of_links_);
        Eigen::VectorXd nextConfig = waypoints_[idx+1].head(num_of_links_);
 
+       /*
        Eigen::VectorXd deltaConfig = nextConfig - prevConfig;
        for(double i=0.0;
            i <= 1.0; i+= getResolutionSize())
@@ -351,6 +352,8 @@ void MultiLinkDI::initLineSegment()
 
            Eigen::Vector3d newPos = getEndEffectorPos(newConfig);
            Eigen::Vector3d newPosNext = getEndEffectorPos(newConfigNext);
+
+           //std::cout << "new " << newPosNext << std::endl;
 
            dart::dynamics::SimpleFramePtr lineFrame =
                    std::make_shared<dart::dynamics::SimpleFrame>(
@@ -364,7 +367,21 @@ void MultiLinkDI::initLineSegment()
            lineFrame->createVisualAspect();
            lineFrame->getVisualAspect()->setColor(default_force_line_color);
            world_->addSimpleFrame(lineFrame);
-       }
+       }*/
+       dart::dynamics::SimpleFramePtr lineFrame =
+               std::make_shared<dart::dynamics::SimpleFrame>(
+                 dart::dynamics::Frame::World());
+       Eigen::Vector3d newPos = getEndEffectorPos(prevConfig);
+       Eigen::Vector3d newPosNext = getEndEffectorPos(nextConfig);
+
+       dart::dynamics::LineSegmentShapePtr lineSeg =
+               std::make_shared<dart::dynamics::LineSegmentShape>(newPos, newPosNext, 3.0);
+       lineSeg->addDataVariance(dart::dynamics::Shape::DYNAMIC_VERTICES);
+
+       lineFrame->setShape(lineSeg);
+       lineFrame->createVisualAspect();
+       lineFrame->getVisualAspect()->setColor(default_force_line_color);
+       world_->addSimpleFrame(lineFrame);
 
    }
 }
