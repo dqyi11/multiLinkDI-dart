@@ -2,28 +2,50 @@
 
 int main(int argc, char* argv[])
 {
-  Eigen::Vector3d diPos;
-  //diPos << -2.0, -2.0, 0.0;
-  MultiLinkDI di(3, diPos);
+  Eigen::Vector3d diAPos, diBPos;
+  diAPos << -2.0, -2.0, 0.0;
+  diBPos << 2.0, 2.0, 0.0;
+  MultiLinkDI di(3,3, diAPos, diBPos);
 
   // Add each body to the last BodyNode in the di
 
 
   //dart::dynamics::BodyNode* bn = di.makeRootBody( MultiLinkDI::orientationType::X, "body1", 0.1, 1.0, 0.2,
   //                                                Eigen::Vector3d(0.0*M_PI/180, 90.0*M_PI/180, 0.0*M_PI/180));
-  dart::dynamics::BodyNode* bn = di.makeRootBody( MultiLinkDI::orientationType::Y, "body1", 0.2, 1.0, 0.1,
+  dart::dynamics::BodyNode* bn = di.makeRootBody( MultiLinkDI::sideType::A, MultiLinkDI::orientationType::Y, "body1", 0.2, 1.0, 0.1,
                                                   Eigen::Vector3d(90.0*M_PI/180, 0.0*M_PI/180, 0.0*M_PI/180), 90 * M_PI / 180.0);
   //dart::dynamics::BodyNode* bn = di.makeRootBody( MultiLinkDI::orientationType::Z, "body1", 1.0, 0.1, 0.2,
   //                                                Eigen::Vector3d(0.0, 0.0, 0.0));
 
 
-  for(unsigned int i=1; i<di.getNumOfLinks(); i++)
+  for(unsigned int i=1; i<di.getNumOfLinks(MultiLinkDI::sideType::A); i++)
   {
     std::stringstream ss;
     ss << "body" << i+1;
     Eigen::Vector3d relativeTrans;
     relativeTrans << 0.0, 0.0, 1.0;
-    bn = di.addBody(bn, MultiLinkDI::orientationType::Y, ss.str(), 0.2, 1.0, 0.1, Eigen::Vector3d(90.0*M_PI/180, 0.0*M_PI/180, 0.0*M_PI/180),
+    bn = di.addBody(bn, MultiLinkDI::sideType::A, MultiLinkDI::orientationType::Y, ss.str(), 0.2, 1.0, 0.1,
+                    Eigen::Vector3d(90.0*M_PI/180, 0.0*M_PI/180, 0.0*M_PI/180),
+                    relativeTrans, 0 * M_PI / 180.0);
+  }
+
+
+  //dart::dynamics::BodyNode* bn = di.makeRootBody( MultiLinkDI::orientationType::X, "body1", 0.1, 1.0, 0.2,
+  //                                                Eigen::Vector3d(0.0*M_PI/180, 90.0*M_PI/180, 0.0*M_PI/180));
+  bn = di.makeRootBody( MultiLinkDI::sideType::B, MultiLinkDI::orientationType::Y, "body1", 0.2, 1.0, 0.1,
+                                                  Eigen::Vector3d(90.0*M_PI/180, 0.0*M_PI/180, 0.0*M_PI/180), 90 * M_PI / 180.0);
+  //dart::dynamics::BodyNode* bn = di.makeRootBody( MultiLinkDI::orientationType::Z, "body1", 1.0, 0.1, 0.2,
+  //                                                Eigen::Vector3d(0.0, 0.0, 0.0));
+
+
+  for(unsigned int i=1; i<di.getNumOfLinks(MultiLinkDI::sideType::B); i++)
+  {
+    std::stringstream ss;
+    ss << "body" << i+1;
+    Eigen::Vector3d relativeTrans;
+    relativeTrans << 0.0, 0.0, 1.0;
+    bn = di.addBody(bn, MultiLinkDI::sideType::B, MultiLinkDI::orientationType::Y, ss.str(), 0.2, 1.0, 0.1,
+                    Eigen::Vector3d(90.0*M_PI/180, 0.0*M_PI/180, 0.0*M_PI/180),
                     relativeTrans, 0 * M_PI / 180.0);
   }
 
@@ -54,12 +76,12 @@ int main(int argc, char* argv[])
 
   //std::cout << "COLLISION " << di.isCollided(pos) << std::endl;
 
-  Eigen::Vector3d endPos = di.getEndEffectorPos();
+  Eigen::Vector3d endPos = di.getEndEffectorPos(MultiLinkDI::sideType::A);
   std::cout << "ENDEFFECTOR " << endPos << std::endl;
 
   Eigen::VectorXd pos2(3);
   pos2 << 15 * M_PI / 180.0, -15 * M_PI / 180.0, 15 * M_PI / 180.0;
-  di.setConfiguration(pos2);
+  //di.setConfiguration(pos2);
 
   di.initVisualization();
 
