@@ -20,6 +20,7 @@ MultiLinkDI::MultiLinkDI(const unsigned int num_of_links, Eigen::Vector3d& pos)
   di_ = Skeleton::create("di");
   world_->addSkeleton(di_);
   di_->setSelfCollisionCheck(true);
+  di_->setAdjacentBodyCheck(false);
 
   window_.setWorld(world_);
   window_.setMultiLinkDI(this);
@@ -315,7 +316,6 @@ BodyNode* MultiLinkDI::addBody(const SkeletonPtr& di, BodyNode* parent,
       R = depth / 2.0; h = width;
       tf.linear() = dart::math::eulerXYZToMatrix(relativeEuler);
       break;
-
   case Y:
       R = width / 2,0; h = depth;
       tf.linear() = dart::math::eulerXYZToMatrix(relativeEuler);

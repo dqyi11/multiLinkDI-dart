@@ -45,7 +45,6 @@ public:
     void addCube(const Eigen::Vector3d& _poisition,
                  const Eigen::Vector3d& _size);
 
-    
     bool isCollided(const Eigen::VectorXd& pos);
 
     void initVisualization();
