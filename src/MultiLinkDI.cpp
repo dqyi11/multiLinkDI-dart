@@ -19,6 +19,7 @@ MultiLinkDI::MultiLinkDI(const unsigned int num_of_links, Eigen::Vector3d& pos)
 
   di_ = Skeleton::create("di");
   world_->addSkeleton(di_);
+  di_->setSelfCollisionCheck(true);
 
   window_.setWorld(world_);
   window_.setMultiLinkDI(this);
@@ -89,6 +90,10 @@ bool MultiLinkDI::isCollided(const Eigen::VectorXd& config)
   setConfiguration(config);
   auto collisionEngine = world_->getConstraintSolver()->getCollisionDetector();
   auto collisionGroup = collisionEngine->createCollisionGroup(di_.get());
+  if (collisionGroup->collide())
+  {
+      return true;
+  }
   auto collisionGroup2 = collisionEngine->createCollisionGroup();
   for(std::vector<dart::dynamics::SkeletonPtr>::iterator it = objects_.begin();
       it != objects_.end();it++)
