@@ -93,7 +93,6 @@ bool MultiLinkDI::isCollided(const Eigen::VectorXd& config)
   auto collisionEngine = world_->getConstraintSolver()->getCollisionDetector();
   auto collisionGroup = collisionEngine->createCollisionGroup(di_.get());
 
-  /*
   auto filter = std::make_shared<dart::collision::BodyNodeCollisionFilter>();
   dart::collision::CollisionOption option(false, 1u, nullptr);
   option.collisionFilter = filter;
@@ -101,7 +100,7 @@ bool MultiLinkDI::isCollided(const Eigen::VectorXd& config)
   if (true==collisionGroup->collide(option))
   {
       return true;
-  }*/
+  }
   auto collisionGroup2 = collisionEngine->createCollisionGroup();
   for(std::vector<dart::dynamics::SkeletonPtr>::iterator it = objects_.begin();
       it != objects_.end();it++)
