@@ -2,6 +2,7 @@
 #include <string>
 #include "MultiLinkDI.hpp"
 #include "MultiLinkDIWindow.hpp"
+#include <dart/collision/CollisionFilter.hpp>
 
 using namespace dart::simulation;
 using namespace dart::dynamics;
@@ -91,10 +92,16 @@ bool MultiLinkDI::isCollided(const Eigen::VectorXd& config)
   setConfiguration(config);
   auto collisionEngine = world_->getConstraintSolver()->getCollisionDetector();
   auto collisionGroup = collisionEngine->createCollisionGroup(di_.get());
-  if (collisionGroup->collide())
+
+  /*
+  auto filter = std::make_shared<dart::collision::BodyNodeCollisionFilter>();
+  dart::collision::CollisionOption option(false, 1u, nullptr);
+  option.collisionFilter = filter;
+
+  if (true==collisionGroup->collide(option))
   {
       return true;
-  }
+  }*/
   auto collisionGroup2 = collisionEngine->createCollisionGroup();
   for(std::vector<dart::dynamics::SkeletonPtr>::iterator it = objects_.begin();
       it != objects_.end();it++)
@@ -103,9 +110,9 @@ bool MultiLinkDI::isCollided(const Eigen::VectorXd& config)
       collisionGroup2->addShapeFramesOf(obj.get());
   }
 
-  dart::collision::CollisionOption option;
+  dart::collision::CollisionOption option2;
   dart::collision::CollisionResult result;
-  bool collision = collisionGroup->collide(collisionGroup2.get(), option, &result);
+  bool collision = collisionGroup->collide(collisionGroup2.get(), option2, &result);
 
   setConfiguration(originalConfig);
   return collision;
