@@ -7,7 +7,7 @@
 using namespace dart::simulation;
 using namespace dart::dynamics;
 
-MultiLinkDI::MultiLinkDI(const unsigned int num_of_links, Eigen::Vector3d& pos)
+MultiLinkDI::MultiLinkDI(const unsigned int num_of_links, const Eigen::Vector3d& pos)
     : basePos_(pos), homeConfig_(num_of_links, 0.0)
 {
   num_of_links_ = num_of_links;
