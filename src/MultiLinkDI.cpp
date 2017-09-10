@@ -3,6 +3,7 @@
 #include "MultiLinkDI.hpp"
 #include "MultiLinkDIWindow.hpp"
 #include <dart/collision/CollisionFilter.hpp>
+#include <dart/collision/dart/DARTCollisionDetector.hpp>
 
 using namespace dart::simulation;
 using namespace dart::dynamics;
@@ -90,12 +91,15 @@ bool MultiLinkDI::isCollided(const Eigen::VectorXd& config)
 {
   Eigen::VectorXd originalConfig = getConfiguration();
   setConfiguration(config);
-  auto collisionEngine = world_->getConstraintSolver()->getCollisionDetector();
-  auto collisionGroup = collisionEngine->createCollisionGroup(di_.get());
 
   auto filter = std::make_shared<dart::collision::BodyNodeCollisionFilter>();
   dart::collision::CollisionOption option(false, 1u, nullptr);
   option.collisionFilter = filter;
+
+
+  world_->getConstraintSolver()->setCollisionDetector(dart::collision::DARTCollisionDetector::create());
+  auto collisionEngine = world_->getConstraintSolver()->getCollisionDetector();
+  auto collisionGroup = collisionEngine->createCollisionGroup(di_.get());
 
   if (true==collisionGroup->collide(option))
   {
@@ -109,9 +113,8 @@ bool MultiLinkDI::isCollided(const Eigen::VectorXd& config)
       collisionGroup2->addShapeFramesOf(obj.get());
   }
 
-  dart::collision::CollisionOption option2;
   dart::collision::CollisionResult result;
-  bool collision = collisionGroup->collide(collisionGroup2.get(), option2, &result);
+  bool collision = collisionGroup->collide(collisionGroup2.get(), option, &result);
 
   setConfiguration(originalConfig);
   return collision;
@@ -347,38 +350,11 @@ void MultiLinkDI::initLineSegment()
         return;
     }
 
-   uint dim = num_of_links_;
    for(size_t idx=0;idx<waypoints_.size()-1;idx++)
    {
        Eigen::VectorXd prevConfig = waypoints_[idx].head(num_of_links_);
        Eigen::VectorXd nextConfig = waypoints_[idx+1].head(num_of_links_);
 
-       /*
-       Eigen::VectorXd deltaConfig = nextConfig - prevConfig;
-       for(double i=0.0;
-           i <= 1.0; i+= getResolutionSize())
-       {
-           Eigen::VectorXd newConfig = prevConfig + i * deltaConfig;
-           Eigen::VectorXd newConfigNext = newConfig + getResolutionSize() * deltaConfig;
-
-           Eigen::Vector3d newPos = getEndEffectorPos(newConfig);
-           Eigen::Vector3d newPosNext = getEndEffectorPos(newConfigNext);
-
-           //std::cout << "new " << newPosNext << std::endl;
-
-           dart::dynamics::SimpleFramePtr lineFrame =
-                   std::make_shared<dart::dynamics::SimpleFrame>(
-                     dart::dynamics::Frame::World());
-
-           dart::dynamics::LineSegmentShapePtr lineSeg =
-                   std::make_shared<dart::dynamics::LineSegmentShape>(newPos, newPosNext, 3.0);
-           lineSeg->addDataVariance(dart::dynamics::Shape::DYNAMIC_VERTICES);
-
-           lineFrame->setShape(lineSeg);
-           lineFrame->createVisualAspect();
-           lineFrame->getVisualAspect()->setColor(default_force_line_color);
-           world_->addSimpleFrame(lineFrame);
-       }*/
        dart::dynamics::SimpleFramePtr lineFrame =
                std::make_shared<dart::dynamics::SimpleFrame>(
                  dart::dynamics::Frame::World());

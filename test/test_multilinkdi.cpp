@@ -90,11 +90,14 @@ int main(int argc, char* argv[])
   */
 
   Eigen::VectorXd pos(12);
-  pos << -1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-  di.setConfiguration(pos);
+  //pos << -1.75, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+  pos << -1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+  //pos << -0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+  //pos << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
 
   std::cout << "COLLISION " << di.isCollided(pos) << std::endl;
 
+  di.setConfiguration(pos);
   di.initVisualization();
 
   return 0;
