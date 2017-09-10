@@ -59,7 +59,7 @@ Eigen::VectorXd MultiLinkDI::getConfiguration()
    Eigen::VectorXd pos(num_of_links_);
    for(unsigned int idx=0;idx<num_of_links_;idx++)
    {
-       pos[idx] = di_->getDof(idx)->getPosition();
+       pos[idx] = di_->getDof(idx)->getPosition() - homeConfig_[idx];
    }
    return pos;
 }
@@ -95,7 +95,6 @@ bool MultiLinkDI::isCollided(const Eigen::VectorXd& config)
   auto filter = std::make_shared<dart::collision::BodyNodeCollisionFilter>();
   dart::collision::CollisionOption option(false, 1u, nullptr);
   option.collisionFilter = filter;
-
 
   world_->getConstraintSolver()->setCollisionDetector(dart::collision::DARTCollisionDetector::create());
   auto collisionEngine = world_->getConstraintSolver()->getCollisionDetector();

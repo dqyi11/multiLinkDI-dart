@@ -101,6 +101,10 @@ void MultiLinkDIWindow::simulateCurrentWaypoint()
 
 void MultiLinkDIWindow::prevWaypoint()
 {
+    if(di_->getWaypointNum()==0)
+    {
+        return;
+    }
     waypointIdx_ --;
     if(waypointIdx_ < 0)
     {
@@ -110,6 +114,10 @@ void MultiLinkDIWindow::prevWaypoint()
 
 void MultiLinkDIWindow::nextWaypoint()
 {
+    if(di_->getWaypointNum()==0)
+    {
+        return;
+    }
     waypointIdx_ ++;
     if(waypointIdx_ >= di_->getWaypointNum())
     {
