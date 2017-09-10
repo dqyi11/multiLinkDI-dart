@@ -96,7 +96,7 @@ bool MultiLinkDI::isCollided(const Eigen::VectorXd& config)
   dart::collision::CollisionOption option(false, 1u, nullptr);
   option.collisionFilter = filter;
 
-  world_->getConstraintSolver()->setCollisionDetector(dart::collision::DARTCollisionDetector::create());
+  //world_->getConstraintSolver()->setCollisionDetector(dart::collision::DARTCollisionDetector::create());
   auto collisionEngine = world_->getConstraintSolver()->getCollisionDetector();
   auto collisionGroup = collisionEngine->createCollisionGroup(di_.get());
 
