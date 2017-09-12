@@ -6,9 +6,75 @@
 
 void MultiLinkDIWindow::draw()
 {
-    SimWindow::draw();
+  glDisable(GL_LIGHTING);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  if (!mSimulating) {
+    if (mPlayFrame < mWorld->getRecording()->getNumFrames()) {
+      std::size_t nSkels = mWorld->getNumSkeletons();
+      for (std::size_t i = 0; i < nSkels; i++) {
+        // std::size_t start = mWorld->getIndex(i);
+        // std::size_t size = mWorld->getSkeleton(i)->getNumDofs();
+        mWorld->getSkeleton(i)->setPositions(mWorld->getRecording()->getConfig(mPlayFrame, i));
+      }
+      if (mShowMarkers) {
+        // std::size_t sumDofs = mWorld->getIndex(nSkels);
+        int nContact = mWorld->getRecording()->getNumContacts(mPlayFrame);
+        for (int i = 0; i < nContact; i++) {
+          Eigen::Vector3d v = mWorld->getRecording()->getContactPoint(mPlayFrame, i);
+          Eigen::Vector3d f = mWorld->getRecording()->getContactForce(mPlayFrame, i);
 
+          glBegin(GL_LINES);
+          glVertex3f(v[0], v[1], v[2]);
+          glVertex3f(v[0] + f[0], v[1] + f[1], v[2] + f[2]);
+          glEnd();
+          mRI->setPenColor(Eigen::Vector3d(0.2, 0.2, 0.8));
+          mRI->pushMatrix();
+          glTranslated(v[0], v[1], v[2]);
+          mRI->drawSphere(0.01);
+          mRI->popMatrix();
+        }
+      }
+    }
+  } else {
+    if (mShowMarkers) {
+      const auto result =
+          mWorld->getConstraintSolver()->getLastCollisionResult();
+      for (const auto& contact : result.getContacts()) {
+        Eigen::Vector3d v = contact.point;
+        Eigen::Vector3d f = contact.force / 10.0;
+        glBegin(GL_LINES);
+        glVertex3f(v[0], v[1], v[2]);
+        glVertex3f(v[0] + f[0], v[1] + f[1], v[2] + f[2]);
+        glEnd();
+        mRI->setPenColor(Eigen::Vector3d(0.2, 0.2, 0.8));
+        mRI->pushMatrix();
+        glTranslated(v[0], v[1], v[2]);
+        mRI->drawSphere(0.01);
+        mRI->popMatrix();
+      }
+    }
+  }
 
+  drawWorld();
+
+  // display the frame count in 2D text
+  char buff[64];
+  if (!mSimulating)
+#ifdef _WIN32
+    _snprintf(buff, sizeof(buff), "%d", mPlayFrame);
+#else
+    std::snprintf(buff, sizeof(buff), "%d", mPlayFrame);
+#endif
+  else
+#ifdef _WIN32
+    _snprintf(buff, sizeof(buff), "%d", mWorld->getSimFrames());
+#else
+    std::snprintf(buff, sizeof(buff), "%d", mWorld->getSimFrames());
+#endif
+  std::string frame(buff);
+  glColor3f(0.0, 0.0, 0.0);
+  gui::drawStringOnScreen(0.02f, 0.02f, frame);
+  glEnable(GL_LIGHTING);
 }
 
 void MultiLinkDIWindow::setConfigPath(Eigen::MatrixXd& configPath)
