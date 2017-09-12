@@ -1,6 +1,8 @@
 #include "MultiLinkDI.hpp"
 #include "MultiLinkDIWindow.hpp"
+
 #include <iostream>
+#include <unistd.h>
 
 void MultiLinkDIWindow::draw()
 {
