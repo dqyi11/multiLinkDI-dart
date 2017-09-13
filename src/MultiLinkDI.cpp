@@ -149,7 +149,8 @@ void MultiLinkDI::setGeometry(const BodyNodePtr& bn, const orientationType type,
 
   // Create a shape node for visualization and collision checking
   auto shapeNode = bn->createShapeNodeWith<VisualAspect, CollisionAspect, DynamicsAspect>(box);
-  shapeNode->getVisualAspect()->setColor(dart::Color::Red());
+  //shapeNode->getVisualAspect()->setColor(dart::Color::Red());
+  shapeNode->getVisualAspect()->setColor(Eigen::Vector3d(178./255, 180./255, 181./255));
 
   // Set the location of the shape node
   Eigen::Isometry3d box_tf(Eigen::Isometry3d::Identity());
@@ -264,7 +265,7 @@ BodyNode* MultiLinkDI::makeRootBody(const SkeletonPtr& di, const orientationType
     std::shared_ptr<CylinderShape> cyl(new CylinderShape(R, h));
 
     auto shapeNode = bn->createShapeNodeWith<VisualAspect>(cyl);
-    shapeNode->getVisualAspect()->setColor(dart::Color::Red());
+    shapeNode->getVisualAspect()->setColor(dart::Color::Blue());
     shapeNode->setRelativeTransform(tf);
 
     // Set the geometry of the Body
