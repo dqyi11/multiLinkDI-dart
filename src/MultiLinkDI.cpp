@@ -249,16 +249,16 @@ BodyNode* MultiLinkDI::makeRootBody(const SkeletonPtr& di, const orientationType
     switch(type)
     {
     case Z:
-        R = depth / 2.0; h = height;
+        R = depth / 1.8; h = height+0.02;
         tf.linear() = dart::math::eulerXYZToMatrix(relativeEuler);
         break;
     case X:
-        R = depth / 2.0; h = width;
+        R = depth / 1.8; h = width+0.02;
         tf.linear() = dart::math::eulerXYZToMatrix(relativeEuler);
         break;
 
     case Y:
-        R = width / 2,0; h = depth;
+        R = width / 1.8; h = depth+0.02;
         tf.linear() = dart::math::eulerXYZToMatrix(relativeEuler);
     }
     std::shared_ptr<CylinderShape> cyl(new CylinderShape(R, h));
@@ -317,15 +317,15 @@ BodyNode* MultiLinkDI::addBody(const SkeletonPtr& di, BodyNode* parent,
   switch(type)
   {
   case Z:
-      R = depth / 2.0; h = height;
+      R = depth / 1.8; h = height+0.02;
       tf.linear() = dart::math::eulerXYZToMatrix(relativeEuler);
       break;
   case X:
-      R = depth / 2.0; h = width;
+      R = depth / 1.8; h = width+0.02;
       tf.linear() = dart::math::eulerXYZToMatrix(relativeEuler);
       break;
   case Y:
-      R = width / 2,0; h = depth;
+      R = width / 1.8; h = depth+0.02;
       tf.linear() = dart::math::eulerXYZToMatrix(relativeEuler);
   }
   std::shared_ptr<CylinderShape> cyl(new CylinderShape(R, h));

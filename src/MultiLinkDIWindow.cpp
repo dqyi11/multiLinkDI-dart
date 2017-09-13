@@ -73,7 +73,7 @@ void MultiLinkDIWindow::draw()
 #endif
   std::string frame(buff);
   glColor3f(0.0, 0.0, 0.0);
-  gui::drawStringOnScreen(0.02f, 0.02f, frame);
+  dart::gui::drawStringOnScreen(0.02f, 0.02f, frame);
   glEnable(GL_LIGHTING);
 }
 
