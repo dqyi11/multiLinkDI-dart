@@ -120,10 +120,11 @@ std::shared_ptr<MultiLinkDI> createMultiLinkDI( std::string problemFilename )
           std::string type = obstacles[i].get("type","").asString();
           if(type == "hypercube")
           {
-            Json::Value centerVal, sizeVal;
+            Json::Value centerVal, sizeVal, colorVal;
 
             Eigen::Vector3d obs_center;
             Eigen::Vector3d obs_size;
+            Eigen::Vector3d obs_color;
 
             centerVal = obstacles[i].get("center", 0);
             for(int j=0;j<centerVal.size();j++)
@@ -135,7 +136,13 @@ std::shared_ptr<MultiLinkDI> createMultiLinkDI( std::string problemFilename )
             {
               obs_size[j] = sizeVal[j].asDouble();
             }
-            di->addCube(obs_center, obs_size);
+            colorVal = obstacles[i].get("color",0);
+            for(int j=0;j<colorVal.size();j++)
+            {
+              obs_color[j] = colorVal[j].asDouble();
+            }
+
+            di->addCube(obs_center, obs_size, obs_color);
           }
         }
     }

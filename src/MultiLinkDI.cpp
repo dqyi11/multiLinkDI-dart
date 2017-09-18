@@ -32,12 +32,13 @@ MultiLinkDI::MultiLinkDI(const unsigned int num_of_links, const Eigen::Vector3d&
 
 MultiLinkDI::~MultiLinkDI()
 {
-
 }
 
-void MultiLinkDI::addPlane(const Eigen::Vector3d & pos, const Eigen::Vector3d & size )
+void MultiLinkDI::addPlane(const Eigen::Vector3d & pos,
+                           const Eigen::Vector3d & size,
+                           const Eigen::Vector3d & color )
 {
-  plane_ = createCube(pos, size, default_cube_mass);
+  plane_ = createCube(pos, size, color, default_cube_mass);
   world_->addSkeleton(plane_);
 }
 
@@ -65,9 +66,12 @@ Eigen::VectorXd MultiLinkDI::getConfiguration()
 }
 
 void MultiLinkDI::addCube(const Eigen::Vector3d& _position,
-                          const Eigen::Vector3d& _size)
+                          const Eigen::Vector3d& _size,
+                          const Eigen::Vector3d& _color)
 {
-  dart::dynamics::SkeletonPtr cube = createCube(_position, _size, default_cube_mass);
+  dart::dynamics::SkeletonPtr cube = createCube(_position, _size,
+                                                _color,
+                                                default_cube_mass);
   world_->addSkeleton(cube);
   objects_.push_back(cube);
 }
@@ -176,6 +180,7 @@ void MultiLinkDI::setGeometry(const BodyNodePtr& bn, const orientationType type,
 
 SkeletonPtr MultiLinkDI::createCube(const Eigen::Vector3d& _position,
                          const Eigen::Vector3d& _size,
+                         const Eigen::Vector3d& _color,
                          double _mass)
 {
   dart::dynamics::SkeletonPtr newCubeSkeleton =
@@ -199,7 +204,7 @@ SkeletonPtr MultiLinkDI::createCube(const Eigen::Vector3d& _position,
       dart::dynamics::VisualAspect,
       dart::dynamics::CollisionAspect,
       dart::dynamics::DynamicsAspect>(newBoxShape);
-  shapeNode->getVisualAspect()->setColor(dart::math::randomVector<3>(0.0, 1.0));
+  shapeNode->getVisualAspect()->setColor(_color);
 
   return newCubeSkeleton;
 }

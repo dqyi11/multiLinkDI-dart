@@ -41,9 +41,11 @@ public:
     void setDofConfiguration(unsigned int idx, double config);
 
     void addPlane(const Eigen::Vector3d & pos = default_plane_pos,
-                  const Eigen::Vector3d & size = default_plane_size );
+                  const Eigen::Vector3d & size = default_plane_size,
+                  const Eigen::Vector3d & color = dart::math::randomVector<3>(0.0, 1.0));
     void addCube(const Eigen::Vector3d& _poisition,
-                 const Eigen::Vector3d& _size);
+                 const Eigen::Vector3d& _size,
+                 const Eigen::Vector3d& _color = dart::math::randomVector<3>(0.0, 1.0));
 
     bool isCollided(const Eigen::VectorXd& pos);
 
@@ -113,7 +115,8 @@ protected:
                      const double width, const double height, const double depth);
 
     dart::dynamics::SkeletonPtr createCube(const Eigen::Vector3d& _position,
-                                           const Eigen::Vector3d& _size,
+                                           const Eigen::Vector3d& _size,                                           
+                                           const Eigen::Vector3d& _color,
                                            double _mass);
 
     dart::dynamics::BodyNode* makeRootBody(const dart::dynamics::SkeletonPtr& di,
