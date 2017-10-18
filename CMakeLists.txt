@@ -56,4 +56,9 @@ add_executable(${PROJECT_NAME}_test test/test_multilinkdi.cpp)
 target_link_libraries(${PROJECT_NAME}_test ${DART_LIBRARIES}
                                            ${PROJECT_NAME})
 
+add_executable(${PROJECT_NAME}_threelinks_test test/test_threelinks.cpp)
+target_link_libraries(${PROJECT_NAME}_threelinks_test ${DART_LIBRARIES}
+                                                      ${PROJECT_NAME})
+
+
 
